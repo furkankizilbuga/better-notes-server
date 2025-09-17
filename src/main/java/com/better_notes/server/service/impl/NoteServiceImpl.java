@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -52,11 +53,30 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public NoteResponseDto getNoteByExternalId(String externalId) {
+        Note note = repository.findByExternalId(UUID.fromString(externalId))
+                .orElseThrow(() -> new ResourceNotFoundException("A note with given externalId could not be found!: " + externalId));
+        return NoteMapper.toResponseDto(note);
+    }
+
+    @Override
     public NoteResponseDto updateNoteById(NoteUpdateDto updateDto) {
         Note note = repository.findById(updateDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("A note with given id could not be found!: " + updateDto.getId()));
         if (updateDto.getTitle() != null && !updateDto.getTitle().isBlank()) note.setTitle(updateDto.getTitle());
-        if (updateDto.getContent() != null && !updateDto.getContent().isBlank()) note.setContent(updateDto.getContent());
+        if (updateDto.getContent() != null && !updateDto.getContent().isBlank())
+            note.setContent(updateDto.getContent());
+        note = repository.save(note);
+        return NoteMapper.toResponseDto(note);
+    }
+
+    @Override
+    public NoteResponseDto updateNoteByExternalId(NoteUpdateDto updateDto, String externalId) {
+        Note note = repository.findByExternalId(UUID.fromString(externalId))
+                .orElseThrow(() -> new ResourceNotFoundException("A note with given externalId could not be found!: " + updateDto.getId()));
+        if (updateDto.getTitle() != null && !updateDto.getTitle().isBlank()) note.setTitle(updateDto.getTitle());
+        if (updateDto.getContent() != null && !updateDto.getContent().isBlank())
+            note.setContent(updateDto.getContent());
         note = repository.save(note);
         return NoteMapper.toResponseDto(note);
     }
@@ -64,7 +84,14 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void deleteNoteById(Long noteId) {
         Note note = repository.findById(noteId)
-                .orElseThrow(() -> new ResourceNotFoundException("A note with given id could not be found!: " + noteId));
+                .orElseThrow(() -> new ResourceNotFoundException("A note with given noteId could not be found!: " + noteId));
+        repository.delete(note);
+    }
+
+    @Override
+    public void deleteNoteByExternalId(String externalId) {
+        Note note = repository.findByExternalId(UUID.fromString(externalId))
+                .orElseThrow(() -> new ResourceNotFoundException("A note with given externalId could not be found!: " + externalId));
         repository.delete(note);
     }
 }

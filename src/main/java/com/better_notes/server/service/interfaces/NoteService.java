@@ -11,6 +11,9 @@ public interface NoteService {
     NoteResponseDto createNote(NoteInsertDto insertDto);
     NoteResponseDto createShortNote(NoteInsertDto insertDto);
     NoteResponseDto getNoteById(Long noteId);
+    NoteResponseDto getNoteByExternalId(String externalId);
     NoteResponseDto updateNoteById(NoteUpdateDto updateDto);
+    NoteResponseDto updateNoteByExternalId(NoteUpdateDto updateDto, String externalId);
     void deleteNoteById(Long noteId);
+    void deleteNoteByExternalId(String externalId);
 }

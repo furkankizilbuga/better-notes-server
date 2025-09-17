@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -22,12 +23,18 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // While offline syncing, there won't be a database where an id can be returned. So, we create on the backend to match.
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID externalId = UUID.randomUUID();
+
     private String title;
 
     @Lob
     private String content;
 
     private boolean isShort = false;
+
+    private boolean isDeleted = false;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;

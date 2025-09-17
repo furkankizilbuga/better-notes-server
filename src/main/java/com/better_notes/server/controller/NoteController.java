@@ -28,9 +28,9 @@ public class NoteController {
         return new ResponseEntity<>(notes, HttpStatus.OK);
     }
 
-    @GetMapping("/{noteId}")
-    public ResponseEntity<NoteResponseDto> getNoteById(@PathVariable Long noteId) {
-        NoteResponseDto responseDto = noteService.getNoteById(noteId);
+    @GetMapping
+    public ResponseEntity<NoteResponseDto> getNoteByExternalId(@RequestParam String externalId) {
+        NoteResponseDto responseDto = noteService.getNoteByExternalId(externalId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -40,7 +40,19 @@ public class NoteController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{noteId}")
+    @PutMapping
+    public ResponseEntity<NoteResponseDto> updateNoteByExternalId(@RequestParam String externalId, @RequestBody NoteUpdateDto updateDto) {
+        NoteResponseDto responseDto = noteService.updateNoteByExternalId(updateDto, externalId);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteNoteByExternalId(@RequestParam String externalId) {
+        noteService.deleteNoteByExternalId(externalId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /*@PutMapping("/{noteId}")
     public ResponseEntity<NoteResponseDto> updateNoteById(@RequestBody NoteUpdateDto updateDto) {
         NoteResponseDto responseDto = noteService.updateNoteById(updateDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -51,4 +63,10 @@ public class NoteController {
         noteService.deleteNoteById(noteId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/{noteId}")
+    public ResponseEntity<NoteResponseDto> getNoteById(@PathVariable Long noteId) {
+        NoteResponseDto responseDto = noteService.getNoteById(noteId);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }*/
 }

@@ -6,14 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class NoteUpdateDto {
-    @NotNull
     private Long id;
+    @NotNull
+    private UUID externalId;
     private String title;
     private String content;
     @JsonProperty("isShort")
     private boolean isShort = false;
+    private boolean isDeleted = false;
 }
